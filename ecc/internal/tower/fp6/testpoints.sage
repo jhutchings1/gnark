@@ -21,9 +21,8 @@ r=sage_eval(sys.argv[3])
 # print "r:", r
 
 # final exponent: (p^6-1)/r
-# for BW6-761 need to multiply by 3
-# TODO: handle multiplication by 3 (or not) in this script
-exponent = 3*(p^6 - 1)/r
+exponent = (p^6 - 1)/r
+exponent *= 3*(t**3 - t**2 + 1) # for BW6-761 need to multiply by some big number
 # print "exponent:", exponent
 
 # fp2 field
