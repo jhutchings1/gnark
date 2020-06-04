@@ -3,23 +3,36 @@
 import sys
 from sage.all import *
 
-if len(sys.argv) < 5:
-    print >> sys.stderr, "Usage: %s <p> <a> <b> <points>..." % sys.argv[0]
+if len(sys.argv) < 7:
+    print >> sys.stderr, "Usage: %s <t> <p> <r> <a> <b> <points>..." % sys.argv[0]
     print >> sys.stderr, "Outputs the sum, product, etc of <points> in the 3-over-2 tower"
     sys.exit(1)
 
+# BLS12 parameter t
+t=sage_eval(sys.argv[1])
+
  # fp field
-p=sage_eval(sys.argv[1]) # prime characteristic p
+p=sage_eval(sys.argv[2]) # prime characteristic p
 fp=GF(p)
 # print "p:", p
 
+# subgroup order r
+r=sage_eval(sys.argv[3])
+# print "r:", r
+
+# final exponent: (p^6-1)/r
+# for BW6-761 need to multiply by 3
+# TODO: handle multiplication by 3 (or not) in this script
+exponent = 3*(p^6 - 1)/r
+# print "exponent:", exponent
+
 # fp2 field
-a=fp(sage_eval(sys.argv[2])) # a must be a quadratic nonresidue modulo p
+a=fp(sage_eval(sys.argv[4])) # a must be a quadratic nonresidue modulo p
 # print "a:", a
 
 # fp6 field
-b0=fp(sage_eval(sys.argv[3]))
-b1=fp(sage_eval(sys.argv[4]))
+b0=fp(sage_eval(sys.argv[5]))
+b1=fp(sage_eval(sys.argv[6]))
 # print "b:", b0, " + ", b1, "u"
 if b1.is_zero():
     print >> sys.stderr, "coefficient of u in b cannot be 0"
@@ -59,7 +72,7 @@ def print_result(out):
     print out2[0]
     print out2[1]
 
-for i in range(5, len(sys.argv), 12):
+for i in range(7, len(sys.argv), 12):
 
     # parse in1, in2
     # in00, in01, in02 are in fp2, need to be embedded into fp6
@@ -77,10 +90,10 @@ for i in range(5, len(sys.argv), 12):
     print_result(in0+in1) # add
     print_result(in0-in1) # sub
     print_result(in0*in1) # mul
-    print_result(in0*fp6([in10[0], 0, 0, in10[1], 0, 0])) # mul by fp2 element
+    # print_result(in0*fp6([in10[0], 0, 0, in10[1], 0, 0])) # mul by fp2 element
 
     # unary ops ignore in1
-    print_result(in0*fp6(v)) # mul by gen (ie. mul by v=(0,1,0) in fp6)
+    # print_result(in0*fp6(v)) # mul by gen (ie. mul by v=(0,1,0) in fp6)
     print_result(in0*in0) # square
 
     # inv
@@ -88,3 +101,10 @@ for i in range(5, len(sys.argv), 12):
         print_result(fp6.zero()) # can't invert 0; just output 0
     else:
         print_result(in0^(-1))
+
+    # print_result(in0.conjugate()) # conjugate
+    print_result(fp6.frobenius_endomorphism()(in0)) # frobenius
+    print_result(fp6.frobenius_endomorphism(2)(in0)) # frobenius squared
+    print_result(fp6.frobenius_endomorphism(3)(in0)) # frobenius cubed
+    print_result(in0^t) # expt
+    print_result(in0^exponent) # final exponent

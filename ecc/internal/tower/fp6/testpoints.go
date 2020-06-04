@@ -15,11 +15,17 @@ var Methods = [...]tower.Method{
 	{Name: "Add", Type: tower.Binary},
 	{Name: "Sub", Type: tower.Binary},
 	{Name: "Mul", Type: tower.Binary},
-	{Name: "MulByE2", Type: tower.Custom},
-	{Name: "MulByGen", Type: tower.Unary},
+	// {Name: "MulByE2", Type: tower.Custom},
+	// {Name: "MulByGen", Type: tower.Unary},
 	// {Name: "MulByNonResidue", Type: tower.Unary},
 	{Name: "Square", Type: tower.Unary},
 	{Name: "Inverse", Type: tower.Unary},
+	// {Name: "Conjugate", Type: tower.Unary},
+	{Name: "Frobenius", Type: tower.Unary},
+	{Name: "FrobeniusSquare", Type: tower.Unary},
+	{Name: "FrobeniusCube", Type: tower.Unary},
+	{Name: "Expt", Type: tower.Custom},
+	{Name: "FinalExponentiation", Type: tower.Unary},
 }
 
 // Degree is the extension degree of fp6 over the base field
@@ -100,9 +106,16 @@ const customTests = `
 // custom helpers for {{.Name}} methods
 //-------------------------------------//
 
-// MulByE2Binary a binary wrapper for MulByE2
-func (z *{{.Name}}) MulByE2Binary(x, y *{{.Name}}) *{{.Name}} {
-	return z.MulByE2(x, &y.B0)
+// ExptBinary a binary wrapper for Expt
+func (z *{{.Name}}) ExptBinary(x, y *{{.Name}}) *{{.Name}} {
+	z.Expt(x)
+
+	// if tAbsVal is negative then need to undo the conjugation in order to match the test point
+	{{- if .TNeg }}
+		z.Conjugate(z) // because tAbsVal is negative
+	{{- end }}
+
+	return z
 }
 `
 
