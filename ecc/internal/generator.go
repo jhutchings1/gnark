@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/consensys/gnark/ecc/internal/tower"
+	"github.com/consensys/gnark/ecc/internal/tower/fp2"
 	"github.com/consensys/gnark/ecc/internal/tower/fp6"
 )
 
@@ -59,8 +60,8 @@ func main() {
 	fPackageName = "bw6_761"
 	fFp = "6891450384315732539396789682275657542479668912536150109513790160209623422243491736087683183289411687640864567753786613451161759120554247759349511699125301598951605099378508850372543631423596795951899700429969112842764913119068299"
 	fFr = "258664426012969094010652733694893533536393512754914660539884262666720468348340822774968888139573360124440321458177"
-	fFp2 = "-1"
-	fFp6 = "1,1"
+	fFp2 = "-4"
+	fFp6 = "0,1"
 	// fFp12 = "0,0,1,0,0,0"
 	ft = "9586122913090633729"
 	fMakeTestPoints = true
@@ -94,62 +95,62 @@ func main() {
 
 	// TODO repeated code: refactor templateData across fp2, fp6, fp12
 
-	// { // begin a block to avoid accidental reuse of fp2TemplateData, fp2Data
-	// 	fp2TemplateData := struct {
-	// 		PackageName   string
-	// 		Name          string
-	// 		Fp2NonResidue string
-	// 		TestPoints    []tower.TestPoint
-	// 		Methods       []tower.Method
-	// 		MethodTypes   tower.MethodTypeMap
-	// 	}{
-	// 		PackageName:   fPackageName,
-	// 		Name:          fp2Name,
-	// 		Fp2NonResidue: fFp2,
-	// 		Methods:       fp2.Methods[:],
-	// 		MethodTypes:   tower.MethodTypes,
-	// 	}
+	{ // begin a block to avoid accidental reuse of fp2TemplateData, fp2Data
+		fp2TemplateData := struct {
+			PackageName   string
+			Name          string
+			Fp2NonResidue string
+			TestPoints    []tower.TestPoint
+			Methods       []tower.Method
+			MethodTypes   tower.MethodTypeMap
+		}{
+			PackageName:   fPackageName,
+			Name:          fp2Name,
+			Fp2NonResidue: fFp2,
+			Methods:       fp2.Methods[:],
+			MethodTypes:   tower.MethodTypes,
+		}
 
-	// 	var fp2Data []codegenData
+		var fp2Data []codegenData
 
-	// 	// source
-	// 	fp2Data = append(fp2Data, codegenData{
-	// 		path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+".go"),
-	// 		sources: fp2.CodeSource,
-	// 	})
+		// source
+		fp2Data = append(fp2Data, codegenData{
+			path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+".go"),
+			sources: fp2.CodeSource,
+		})
 
-	// 	// tests
-	// 	fp2Data = append(fp2Data, codegenData{
-	// 		path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+"_test.go"),
-	// 		sources: fp2.CodeTest,
-	// 	})
+		// tests
+		fp2Data = append(fp2Data, codegenData{
+			path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+"_test.go"),
+			sources: fp2.CodeTest,
+		})
 
-	// 	// test points
-	// 	if fMakeTestPoints {
+		// test points
+		if fMakeTestPoints {
 
-	// 		testInputs := fp2.GenerateTestInputs(fFp)
-	// 		var err error
-	// 		fp2TemplateData.TestPoints, err = tower.GenerateTestOutputs(testInputs, "../internal/tower/fp2/testpoints.sage", fFp, fFp2)
-	// 		if err != nil {
-	// 			fmt.Fprintln(os.Stderr, "error:", err)
-	// 			os.Exit(-1)
-	// 		}
-	// 		if !sanityCheck(fp2TemplateData.TestPoints, fp2.Degree) {
-	// 			fmt.Fprintln(os.Stderr, "idiot!", err)
-	// 			os.Exit(-1)
-	// 		}
+			testInputs := fp2.GenerateTestInputs(fFp)
+			var err error
+			fp2TemplateData.TestPoints, err = tower.GenerateTestOutputs(testInputs, "../internal/tower/fp2/testpoints.sage", fFp, fFp2)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "error:", err)
+				os.Exit(-1)
+			}
+			if !sanityCheck(fp2TemplateData.TestPoints, fp2.Degree) {
+				fmt.Fprintln(os.Stderr, "idiot!", err)
+				os.Exit(-1)
+			}
 
-	// 		fp2Data = append(fp2Data, codegenData{
-	// 			path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+"testpoints_test.go"),
-	// 			sources: fp2.CodeTestPoints,
-	// 		})
-	// 	}
+			fp2Data = append(fp2Data, codegenData{
+				path:    filepath.Join(fOutputDir, strings.ToLower(fp2TemplateData.Name)+"testpoints_test.go"),
+				sources: fp2.CodeTestPoints,
+			})
+		}
 
-	// 	if err := generateCode(fp2Data, fp2TemplateData); err != nil {
-	// 		fmt.Fprintln(os.Stderr, "error:", err)
-	// 		os.Exit(-1)
-	// 	}
-	// }
+		if err := generateCode(fp2Data, fp2TemplateData); err != nil {
+			fmt.Fprintln(os.Stderr, "error:", err)
+			os.Exit(-1)
+		}
+	}
 
 	//----------------//
 	// generate fp6

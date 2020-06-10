@@ -2,10 +2,8 @@
 
 package bw6_761
 
-import "github.com/consensys/gnark/ecc/bw6_761/fp"
-
 // E6 is a degree-three finite field extension of fp2:
-// B0 + B1v + B2v^2 where v^3-1,1 is irrep in fp2
+// B0 + B1v + B2v^2 where v^3-0,1 is irrep in fp2
 
 type E6 struct {
 	B0, B1, B2 E2
@@ -72,7 +70,7 @@ func (z *E6) Sub(x, y *E6) *E6 {
 	return z
 }
 
-// MulByGen Multiplies by v, root of X^3-1,1
+// MulByGen Multiplies by v, root of X^3-0,1
 // TODO deprecate in favor of inlined MulByNonResidue in fp12 package
 func (z *E6) MulByGen(x *E6) *E6 {
 	var result E6
@@ -80,13 +78,11 @@ func (z *E6) MulByGen(x *E6) *E6 {
 	result.B1 = x.B0
 	result.B2 = x.B1
 	{ // begin: inline result.B0.MulByNonResidue(&x.B2)
-		var buf E2
-		buf.Set(&x.B2)
-		result.B0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(result.B0).A0, &buf.A1)
-			(&(result.B0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(result.B0).A0, &buf.A1)
-		result.B0.A0.AddAssign(&buf.A0)
+		buf := (&x.B2).A0
+		{ // begin: inline MulByNonResidue(&(result.B0).A0, &(&x.B2).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(result.B0).A0, &(&x.B2).A1)
+		(result.B0).A1 = buf
 	} // end: inline result.B0.MulByNonResidue(&x.B2)
 
 	z.Set(&result)
@@ -122,13 +118,11 @@ func (z *E6) Mul(x, y *E6) *E6 {
 		SubAssign(&b1).
 		SubAssign(&b2)
 	{ // begin: inline rb0.MulByNonResidue(&rb0)
-		var buf E2
-		buf.Set(&rb0)
-		rb0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(rb0).A0, &buf.A1)
-			(&(rb0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(rb0).A0, &buf.A1)
-		rb0.A0.AddAssign(&buf.A0)
+		buf := (&rb0).A0
+		{ // begin: inline MulByNonResidue(&(rb0).A0, &(&rb0).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(rb0).A0, &(&rb0).A1)
+		(rb0).A1 = buf
 	} // end: inline rb0.MulByNonResidue(&rb0)
 	rb0.AddAssign(&b0)
 
@@ -139,13 +133,11 @@ func (z *E6) Mul(x, y *E6) *E6 {
 		SubAssign(&b0).
 		SubAssign(&b1)
 	{ // begin: inline b3.MulByNonResidue(&b2)
-		var buf E2
-		buf.Set(&b2)
-		b3.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(b3).A0, &buf.A1)
-			(&(b3).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(b3).A0, &buf.A1)
-		b3.A0.AddAssign(&buf.A0)
+		buf := (&b2).A0
+		{ // begin: inline MulByNonResidue(&(b3).A0, &(&b2).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(b3).A0, &(&b2).A1)
+		(b3).A1 = buf
 	} // end: inline b3.MulByNonResidue(&b2)
 	z.B1.AddAssign(&b3)
 
@@ -184,13 +176,11 @@ func (z *E6) MulByNotv2(x, y *E6) *E6 {
 	rb0.Mul(&b2, &y.B1).
 		SubAssign(&b1)
 	{ // begin: inline rb0.MulByNonResidue(&rb0)
-		var buf E2
-		buf.Set(&rb0)
-		rb0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(rb0).A0, &buf.A1)
-			(&(rb0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(rb0).A0, &buf.A1)
-		rb0.A0.AddAssign(&buf.A0)
+		buf := (&rb0).A0
+		{ // begin: inline MulByNonResidue(&(rb0).A0, &(&rb0).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(rb0).A0, &(&rb0).A1)
+		(rb0).A1 = buf
 	} // end: inline rb0.MulByNonResidue(&rb0)
 	rb0.AddAssign(&b0)
 
@@ -219,13 +209,11 @@ func (z *E6) Square(x *E6) *E6 {
 
 	// step 3
 	{ // begin: inline b0.MulByNonResidue(&b4)
-		var buf E2
-		buf.Set(&b4)
-		b0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(b0).A0, &buf.A1)
-			(&(b0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(b0).A0, &buf.A1)
-		b0.A0.AddAssign(&buf.A0)
+		buf := (&b4).A0
+		{ // begin: inline MulByNonResidue(&(b0).A0, &(&b4).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(b0).A0, &(&b4).A1)
+		(b0).A1 = buf
 	} // end: inline b0.MulByNonResidue(&b4)
 	b0.AddAssign(&b3)
 
@@ -236,13 +224,11 @@ func (z *E6) Square(x *E6) *E6 {
 
 	// step 9
 	{ // begin: inline z.B0.MulByNonResidue(&b4)
-		var buf E2
-		buf.Set(&b4)
-		z.B0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-			(&(z.B0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-		z.B0.A0.AddAssign(&buf.A0)
+		buf := (&b4).A0
+		{ // begin: inline MulByNonResidue(&(z.B0).A0, &(&b4).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(z.B0).A0, &(&b4).A1)
+		(z.B0).A1 = buf
 	} // end: inline z.B0.MulByNonResidue(&b4)
 	z.B0.AddAssign(&b2)
 
@@ -271,23 +257,19 @@ func (z *E6) Square2(x *E6) *E6 {
 
 	z.B0.Sub(&v12, &v1).SubAssign(&v2)
 	{ // begin: inline z.B0.MulByNonResidue(&z.B0)
-		var buf E2
-		buf.Set(&z.B0)
-		z.B0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-			(&(z.B0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-		z.B0.A0.AddAssign(&buf.A0)
+		buf := (&z.B0).A0
+		{ // begin: inline MulByNonResidue(&(z.B0).A0, &(&z.B0).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(z.B0).A0, &(&z.B0).A1)
+		(z.B0).A1 = buf
 	} // end: inline z.B0.MulByNonResidue(&z.B0)
 	z.B0.AddAssign(&v0)
 	{ // begin: inline z.B1.MulByNonResidue(&v2)
-		var buf E2
-		buf.Set(&v2)
-		z.B1.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(z.B1).A0, &buf.A1)
-			(&(z.B1).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(z.B1).A0, &buf.A1)
-		z.B1.A0.AddAssign(&buf.A0)
+		buf := (&v2).A0
+		{ // begin: inline MulByNonResidue(&(z.B1).A0, &(&v2).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(z.B1).A0, &(&v2).A1)
+		(z.B1).A1 = buf
 	} // end: inline z.B1.MulByNonResidue(&v2)
 	z.B1.AddAssign(&v01).SubAssign(&v0).SubAssign(&v1)
 
@@ -305,23 +287,19 @@ func (z *E6) Square3(x *E6) *E6 {
 	s3.Mul(&x.B1, &x.B2).Double(&s3)
 	s4.Square(&x.B2)
 	{ // begin: inline z.B0.MulByNonResidue(&s3)
-		var buf E2
-		buf.Set(&s3)
-		z.B0.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-			(&(z.B0).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(z.B0).A0, &buf.A1)
-		z.B0.A0.AddAssign(&buf.A0)
+		buf := (&s3).A0
+		{ // begin: inline MulByNonResidue(&(z.B0).A0, &(&s3).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(z.B0).A0, &(&s3).A1)
+		(z.B0).A1 = buf
 	} // end: inline z.B0.MulByNonResidue(&s3)
 	z.B0.AddAssign(&s0)
 	{ // begin: inline z.B1.MulByNonResidue(&s4)
-		var buf E2
-		buf.Set(&s4)
-		z.B1.A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(z.B1).A0, &buf.A1)
-			(&(z.B1).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(z.B1).A0, &buf.A1)
-		z.B1.A0.AddAssign(&buf.A0)
+		buf := (&s4).A0
+		{ // begin: inline MulByNonResidue(&(z.B1).A0, &(&s4).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(z.B1).A0, &(&s4).A1)
+		(z.B1).A1 = buf
 	} // end: inline z.B1.MulByNonResidue(&s4)
 	z.B1.AddAssign(&s1)
 	z.B2.Add(&s1, &s2).AddAssign(&s3).SubAssign(&s0).SubAssign(&s4)
@@ -347,25 +325,21 @@ func (z *E6) Inverse(x *E6) *E6 {
 
 	// step 7
 	{ // begin: inline c[0].MulByNonResidue(&t[5])
-		var buf E2
-		buf.Set(&t[5])
-		c[0].A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(c[0]).A0, &buf.A1)
-			(&(c[0]).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(c[0]).A0, &buf.A1)
-		c[0].A0.AddAssign(&buf.A0)
+		buf := (&t[5]).A0
+		{ // begin: inline MulByNonResidue(&(c[0]).A0, &(&t[5]).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(c[0]).A0, &(&t[5]).A1)
+		(c[0]).A1 = buf
 	} // end: inline c[0].MulByNonResidue(&t[5])
 	c[0].Neg(&c[0]).AddAssign(&t[0])
 
 	// step 8
 	{ // begin: inline c[1].MulByNonResidue(&t[2])
-		var buf E2
-		buf.Set(&t[2])
-		c[1].A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(c[1]).A0, &buf.A1)
-			(&(c[1]).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(c[1]).A0, &buf.A1)
-		c[1].A0.AddAssign(&buf.A0)
+		buf := (&t[2]).A0
+		{ // begin: inline MulByNonResidue(&(c[1]).A0, &(&t[2]).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(c[1]).A0, &(&t[2]).A1)
+		(c[1]).A1 = buf
 	} // end: inline c[1].MulByNonResidue(&t[2])
 	c[1].SubAssign(&t[3])
 
@@ -376,13 +350,11 @@ func (z *E6) Inverse(x *E6) *E6 {
 	buf.Mul(&x.B1, &c[2])
 	t[6].AddAssign(&buf)
 	{ // begin: inline t[6].MulByNonResidue(&t[6])
-		var buf E2
-		buf.Set(&t[6])
-		t[6].A1.Add(&buf.A0, &buf.A1)
-		{ // begin: inline MulByNonResidue(&(t[6]).A0, &buf.A1)
-			(&(t[6]).A0).Neg(&buf.A1)
-		} // end: inline MulByNonResidue(&(t[6]).A0, &buf.A1)
-		t[6].A0.AddAssign(&buf.A0)
+		buf := (&t[6]).A0
+		{ // begin: inline MulByNonResidue(&(t[6]).A0, &(&t[6]).A1)
+			panic("not implemented yet")
+		} // end: inline MulByNonResidue(&(t[6]).A0, &(&t[6]).A1)
+		(t[6]).A1 = buf
 	} // end: inline t[6].MulByNonResidue(&t[6])
 	buf.Mul(&x.B0, &c[0])
 	t[6].AddAssign(&buf)
@@ -395,34 +367,22 @@ func (z *E6) Inverse(x *E6) *E6 {
 	return z
 }
 
-// MulByNonResidue multiplies a E2 by (1,1)
+// MulByNonResidue multiplies a E2 by (0,1)
 func (z *E2) MulByNonResidue(x *E2) *E2 {
-	var buf E2
-	buf.Set(x)
-	z.A1.Add(&buf.A0, &buf.A1)
-	{ // begin: inline MulByNonResidue(&(z).A0, &buf.A1)
-		(&(z).A0).Neg(&buf.A1)
-	} // end: inline MulByNonResidue(&(z).A0, &buf.A1)
-	z.A0.AddAssign(&buf.A0)
+	buf := (x).A0
+	{ // begin: inline MulByNonResidue(&(z).A0, &(x).A1)
+		panic("not implemented yet")
+	} // end: inline MulByNonResidue(&(z).A0, &(x).A1)
+	(z).A1 = buf
 	return z
 }
 
-// MulByNonResidueInv multiplies a E2 by (1,1)^{-1}
+// MulByNonResidueInv multiplies a E2 by (0,1)^{-1}
 func (z *E2) MulByNonResidueInv(x *E2) *E2 {
-	// (z).A0 = ((x).A0 + (x).A1)/2
-	// (z).A1 = ((x).A1 - (x).A0)/2
-	buf := *(x)
-	(z).A0.Add(&buf.A0, &buf.A1)
-	(z).A1.Sub(&buf.A1, &buf.A0)
-	twoInv := fp.Element{
-		1730508156817200468,
-		9606178027640717313,
-		7150789853162776431,
-		7936136305760253186,
-		15245073033536294050,
-		1728177566264616342,
-	}
-	(z).A0.MulAssign(&twoInv)
-	(z).A1.MulAssign(&twoInv)
+	buf := (x).A1
+	{ // begin: inline MulByNonResidueInv(&(z).A1, &(x).A0)
+		panic("not implemented yet")
+	} // end: inline MulByNonResidueInv(&(z).A1, &(x).A0)
+	(z).A0 = buf
 	return z
 }
